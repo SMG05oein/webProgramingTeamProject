@@ -68,8 +68,8 @@
 </div>
 
 <script>
-    let n = 0; // 뭐?
-    let m = 0; // 틀린 횟수
+    let n = 0;
+    let m = 0;
     const head = document.getElementById('head');
     const gameBoard = document.getElementById('game_board');
     const errCount = document.getElementById('err_count');
@@ -92,9 +92,6 @@
         return Math.floor(Math.random() * (max + 1));
     }
 
-    /**
-     * 게임을 초기 상태로 되돌림
-     */
     function startGame() {
         n = getRandomNum(9);
         m = 0;
@@ -104,7 +101,6 @@
 
         gameBoard.innerHTML = '';
 
-        // 게임 보드에 0~9 랜덤 숫자출력
         for (let i = 0; i < 6; i++) {
             const row = document.createElement('div');
             row.className = 'row';
@@ -123,17 +119,11 @@
 
     }
 
-    /**
-     * 틀린 횟수 m을 화면에 출력
-     */
     function updateErrNum() {
         errCount.textContent = m;
     }
 
 
-    /**
-     * .col 클릭 이벤트
-     */
     function addClickEvent(e) {
         const clickedCol = e.target;
 
@@ -157,15 +147,11 @@
         }
     }
 
-    /**
-     * 게임판에 n과 일치하지만 아직 클릭되지 않은 셀이 남아있는지 확인
-     */
     function checkComGame() {
         const cols = gameBoard.querySelectorAll('.col');
         for (const col of cols) {
             const colValue = parseInt(col.textContent);
 
-            // col 숫자가 n과 같고 col의 클래스 명이 clicked인게 있니? 있으면 게임을 계속 진행
             if (colValue === n && !col.className.includes('clicked')) {
                 viewNum();
                 return false;
@@ -174,9 +160,6 @@
         return true;
     }
 
-    /**
-     * 게임 완료 시 .col 클릭 이벤트 제거
-     */
     function removeClickEvent() {
         const cols = gameBoard.querySelectorAll('.col');
         cols.forEach(c => {

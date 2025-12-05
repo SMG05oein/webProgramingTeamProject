@@ -4,7 +4,333 @@
     <meta charset="UTF-8">
     <title>웹프로그래밍 팀프로젝트</title>
 </head>
+
 <body>
-<!--수정하지 말 것-->
+<style>
+    #alert{
+        color: red;
+        margin-bottom: 20px;
+
+    }
+    .Section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        border: black solid 1px;
+        box-shadow: 0 8px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    #head {
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #0023ff;
+    }
+    .col {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1em;
+        font-weight: bold;
+        border: 1px solid #eee;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .clicked{
+        background-color: #00ff58;
+    }
+    .game_board {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    .row{
+        display: flex;
+        gap: 5px;
+    }
+</style>
+
+<div class="Section">
+    <div id="head"></div>
+    <div id="alert"></div>
+    <div id="game_board" class="game_board"></div>
+
+    <button id="reset_btn">게임 초기화</button>
+    <div id="stats">
+        틀린 횟수: <span id="err_count">0</span>
+    </div>
+</div>
+
+<script>
+    let n = 0; // 뭐?
+    let m = 0; // 틀린 횟수
+    const head = document.getElementById('head');
+    const gameBoard = document.getElementById('game_board');
+    const errCount = document.getElementById('err_count');
+    const resetBtn = document.getElementById('reset_btn');
+    const Alert = document.getElementById('alert');
+
+    function viewNum(){
+        const colNum = gameBoard.querySelectorAll('.col');
+        let totalNum = 0;
+
+        for(const col of colNum){
+            if(parseInt(col.innerHTML) === n && !col.className.includes('clicked')){
+                totalNum++;
+            }
+        }
+        Alert.innerText = ` ${totalNum}개 남았습니다`;
+    }
+
+    function getRandomNum(max) {
+        return Math.floor(Math.random() * (max + 1));
+    }
+
+    /**
+     * 게임을 초기 상태로 되돌림
+     */
+    function startGame() {
+        n = getRandomNum(9);
+        m = 0;
+        updateErrNum();
+        viewNum();
+        head.textContent = `숫자 ${n}을(를) 모두 찾아서 클릭하세요.`;
+
+        gameBoard.innerHTML = '';
+
+        // 게임 보드에 0~9 랜덤 숫자출력
+        for (let i = 0; i < 6; i++) {
+            const row = document.createElement('div');
+            row.className = 'row';
+
+            for(let j = 0; j < 10; j++){
+                const col = document.createElement('div');
+                col.className = 'col';
+                col.textContent = getRandomNum(9);
+                col.addEventListener('click', addClickEvent);
+
+                row.append(col);
+            }
+            gameBoard.append(row);
+        }
+        viewNum();
+
+    }
+
+    /**
+     * 틀린 횟수 m을 화면에 출력
+     */
+    function updateErrNum() {
+        errCount.textContent = m;
+    }
+
+
+    /**
+     * .col 클릭 이벤트
+     */
+    function addClickEvent(e) {
+        const clickedCol = e.target;
+
+        const clickedNumber = parseInt(clickedCol.textContent);
+
+        if (clickedNumber === n) {
+            clickedCol.classList.add('clicked');
+
+            if (checkComGame()) {
+                removeClickEvent();
+                setTimeout(()=>{
+                    alert(`축하합니다! 숫자 ${n}을(를) 모두 찾았습니다!\n틀린 횟수: ${m}번`);
+                    viewNum();
+                }, 0);
+            }
+
+        } else {
+            alert("틀린 숫자를 클릭했습니다");
+            m++;
+            updateErrNum();
+        }
+    }
+
+    /**
+     * 게임판에 n과 일치하지만 아직 클릭되지 않은 셀이 남아있는지 확인
+     */
+    function checkComGame() {
+        const cols = gameBoard.querySelectorAll('.col');
+        for (const col of cols) {
+            const colValue = parseInt(col.textContent);
+
+            // col 숫자가 n과 같고 col의 클래스 명이 clicked인게 있니? 있으면 게임을 계속 진행
+            if (colValue === n && !col.className.includes('clicked')) {
+                viewNum();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 게임 완료 시 .col 클릭 이벤트 제거
+     */
+    function removeClickEvent() {
+        const cols = gameBoard.querySelectorAll('.col');
+        cols.forEach(c => {
+            c.removeEventListener('click', addClickEvent);
+        });
+    }
+
+    resetBtn.addEventListener('click', () => {
+        startGame();
+    });
+
+    startGame();
+</script>
+
+<style>
+    table { border-collapse: collapse; }
+    td { border: 1px solid black; width: 80px; height: 50px; text-align: center; font-weight: bold; }
+    .input { margin: 20px 0; }
+    .input label { display: block; margin-bottom: 5px; font-weight: bold; }
+    .result-container { width: 400px; margin-top: 20px; padding: 10px;
+        border: 2px solid #ccc; background-color: #f9f9f9; text-align: center; }
+</style>
+
+<div class="Section">
+    <table>
+        <tr><td id="td00"></td><td id="td01"></td><td id="td02"></td><td id="td03"></td></tr>
+        <tr><td id="td10"></td><td id="td11"></td><td id="td12"></td><td id="td13"></td></tr>
+        <tr><td id="td20"></td><td id="td21"></td><td id="td22"></td><td id="td23"></td></tr>
+        <tr><td id="td30"></td><td id="td31"></td><td id="td32"></td><td id="td33"></td></tr>
+        <tr><td id="td40"></td><td id="td41"></td><td id="td42"></td><td id="td43"></td></tr>
+    </table>
+
+    <div class="input">
+        <label for="movementInput">[왼쪽, 오른쪽, 위, 아래] 입력하기 (예: 0,1,0,0)</label>
+        <input type="text" id="movementInput">
+    </div>
+
+    <div>
+        <button onclick="answer()">정답 확인</button>
+        <button onclick="reset()">초기화</button>
+    </div>
+
+    <div class="result-container">
+        <div id="result">
+            [<span id="start">?</span>] -> [<span id="end">?</span>] <br> 만나려면 어떻게 해야합니까?
+        </div>
+    </div>
+</div>
+
+<script>
+    const arrays = ['개', '새', '축구공', '남자', '잔', '주사위'];
+    const ROWS = 5;
+    const COLS = 4;
+
+    let alldata = {};
+    let start = null;
+    let end = null;
+
+    const find = (name) => {
+        return alldata[name] || null;
+    };
+
+    const xyz = (cellId) => {
+        const R = parseInt(cellId[2]);
+        const C = parseInt(cellId[3]);
+        return [R, C];
+    };
+
+    const shuffle = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    };
+    const reset = () => {
+        alldata = {};
+        document.getElementById('movementInput').value = '';
+
+        const cells = [];
+        for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+                const cellId = 'td' + r + c;
+                const $cell = document.getElementById(cellId);
+
+                if ($cell) {
+                    $cell.innerHTML = "";
+                    $cell.title = `행: ${r}, 열: ${c}`;
+                    cells.push(cellId);                    }
+            }
+        }
+        shuffle(cells);
+        for (let i = 0; i < arrays.length; i++) {
+            const name = arrays[i];
+            const rdcell = cells[i];
+
+            const $cell = document.getElementById(rdcell);
+            if ($cell) {
+                alldata[name] = rdcell;
+                $cell.innerHTML = name;
+            }
+        }
+        const m = arrays.slice();
+        shuffle(m);
+        start = m[0];
+        end = m[1];
+        document.getElementById('start').innerText = start;
+        document.getElementById('end').innerText = end;
+    };
+
+    answer = () => {
+        const movementInput = document.getElementById('movementInput').value.trim();
+        const userMovement = movementInput.split(',').map((s) => {
+            return parseInt(s.trim());
+        });
+
+        const startCellId = find(start);
+        const endCellId = find(end);
+
+        const [startR, startC] = xyz(startCellId);
+        const [endR, endC] = xyz(endCellId);
+
+        const movementR = endR - startR;
+        const movementC = endC - startC;
+
+        const qwer = [0, 0, 0, 0]; // [왼쪽, 오른쪽, 위, 아래]
+
+        if (movementC < 0) {
+            qwer[0] = Math.abs(movementC); // 왼쪽
+        } else if (movementC > 0) {
+            qwer[1] = movementC; // 오른쪽
+        }
+
+        if (movementR < 0) {
+            qwer[2] = Math.abs(movementR); // 위
+        } else if (movementR > 0) {
+            qwer[3] = movementR; // 아래
+        }
+
+        const userStr = userMovement.join(',');
+        const qwerStr = qwer.join(',');
+        const isCorrect = userStr === qwerStr;
+
+        if (isCorrect) {
+            alert(`정답입니다!`);
+        } else {
+            alert("틀렸습니다. 다시 시도해 보세요.");
+        }
+    };
+
+    reset();
+</script>
 </body>
 </html>

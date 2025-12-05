@@ -111,18 +111,18 @@
             const movementR = endR - startR;
             const movementC = endC - startC;
             
-            const qwer = [0, 0, 0, 0]; // [왼쪽, 오른쪽, 위, 아래]
+            const qwer = [0, 0, 0, 0];
 
             if (movementC < 0) {
-                qwer[0] = Math.abs(movementC); // 왼쪽
+                qwer[0] = Math.abs(movementC);
             } else if (movementC > 0) {
-                qwer[1] = movementC; // 오른쪽
+                qwer[1] = movementC;
             }
 
             if (movementR < 0) {
-                qwer[2] = Math.abs(movementR); // 위
+                qwer[2] = Math.abs(movementR);
             } else if (movementR > 0) {
-                qwer[3] = movementR; // 아래
+                qwer[3] = movementR;
             }
 
             const userStr = userMovement.join(',');
