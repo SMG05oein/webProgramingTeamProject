@@ -6,7 +6,13 @@
 </head>
 
 <body>
+<!--민관-->
 <style>
+    .Who{
+        font-size: 2rem;
+        font-weight: bold;
+        margin: -10px 0 20px 0;
+    }
     #alert{
         color: red;
         margin-bottom: 20px;
@@ -58,9 +64,20 @@
         display: flex;
         gap: 5px;
     }
+    /**/
+    .tempTable tbody tr td,th{
+        width: 50px !important;
+        height: 40px !important;
+    }
+    .tempTable tbody tr input{
+        width: 50px !important;
+        /*height: 30px !important;*/
+    }
+/*    */
 </style>
 
 <div class="Section">
+    <div class="Who">서민관</div>
     <div id="head"></div>
     <div id="alert"></div>
     <div id="game_board" class="game_board"></div>
@@ -77,7 +94,7 @@
     const head = document.getElementById('head');
     const gameBoard = document.getElementById('game_board');
     const errCount = document.getElementById('err_count');
-    const resetBtn = document.getElementById('reset_btn');
+    const resetBtn1 = document.getElementById('reset_btn');
     const Alert = document.getElementById('alert');
 
     function viewNum(){
@@ -188,13 +205,15 @@
         });
     }
 
-    resetBtn.addEventListener('click', () => {
+    resetBtn1.addEventListener('click', () => {
         startGame();
     });
 
     startGame();
 </script>
+<!--민관-->
 
+<!--태혁-->
 <style>
     table { border-collapse: collapse; }
     td { border: 1px solid black; width: 80px; height: 50px; text-align: center; font-weight: bold; }
@@ -205,6 +224,7 @@
 </style>
 
 <div class="Section">
+    <div class="Who">정태혁</div>
     <table>
         <tr><td id="td00"></td><td id="td01"></td><td id="td02"></td><td id="td03"></td></tr>
         <tr><td id="td10"></td><td id="td11"></td><td id="td12"></td><td id="td13"></td></tr>
@@ -332,5 +352,166 @@
 
     reset();
 </script>
+<!--태혁-->
+
+<!--준호-->
+<div class="Section">
+    <div class="Who">홍준호</div>
+    <!--문제 출력표 입력 -->
+    <table class="tempTable" border="1"> <!--이것만 쓰면 두줄겹침 -->
+        <tr>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th><input type="text" class="blank" data-answer="5"></th>
+            <th>6</th>
+            <th>7</th>
+            <th>8</th>
+            <th>9</th>
+            <th>10</th>
+        </tr>
+
+        <tr>
+            <td>10</td>
+            <td>20</td>
+            <td>30</td>
+            <td>40</td>
+            <td><input type="text" class="blank" data-answer="50"></td>
+            <td>60</td>
+            <td>70</td>
+            <td>80</td>
+            <td>90</td>
+            <td>100</td>
+        </tr>
+
+        <tr>
+            <td>5</td>
+            <td>10</td>
+            <td>15</td>
+            <td>20</td>
+            <td><input type="text" class="blank" data-answer="25"></td>
+            <td>30</td>
+            <td>35</td>
+            <td>40</td>
+            <td>45</td>
+            <td>50</td>
+        </tr>
+
+        <tr>
+            <td>2</td>
+            <td>4</td>
+            <td>6</td>
+            <td>8</td>
+            <td><input type="text" class="blank" data-answer="10"></td>
+            <td>12</td>
+            <td>14</td>
+            <td>16</td>
+            <td>18</td>
+            <td>20</td>
+        </tr>
+
+        <tr>
+            <td>3</td>
+            <td>6</td>
+            <td>9</td>
+            <td>12</td>
+            <td><input type="text" class="blank" data-answer="15"></td>
+            <td>18</td>
+            <td>21</td>
+            <td>24</td>
+            <td>27</td>
+            <td>30</td>
+        </tr>
+
+        <tr>
+            <td>11</td>
+            <td>21</td>
+            <td>31</td>
+            <td><input type="text" class="blank" data-answer="41"></td>
+            <td>51</td>
+            <td>61</td>
+            <td>71</td>
+            <td>81</td>
+            <td>91</td>
+            <td>101</td>
+        </tr>
+    </table>
+
+    <br>
+
+    <!-- 제출 / 다시 풀기 버튼 -->
+    <div>
+        <button id="submitBtn">제출</button>
+        <button id="resetBtn">다시 풀기</button>
+    </div>
+
+    <!-- 결과 및 메시지 출력 -->
+    <div id="result1"></div>
+    <div id="message"></div>
+</div>
+
+<script>
+    // 빈칸 요소들
+    const blanks = document.querySelectorAll(".blank");
+
+    // 버튼과 출력 영역
+    const submitBtn = document.getElementById("submitBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const resultDiv = document.getElementById("result1");
+    const messageDiv = document.getElementById("message");
+
+
+    submitBtn.addEventListener("click", function () {
+        // 입력값 검사 준비
+        let correctCount = 0;
+        let invalidInput = false;
+
+        // 이전 결과/메시지 지우기
+        resultDiv.textContent = "";
+        messageDiv.textContent = "";
+
+        // 모든 칸이 비었거나 숫자인지 검사
+        blanks.forEach(function (input) {
+            const raw = input.value.trim();
+            const num = Number(raw);
+
+            if (raw === "" || Number.isNaN(num)) {
+                invalidInput = true;
+            }
+        });
+
+        // 모든 값이 유효한가 -> 아니오 -> 경고 메시지 출력 -> 끝
+        if (invalidInput) {
+            messageDiv.textContent = "모든 빈칸에 숫자를 입력해 주세요.";
+            return;
+        }
+
+        // 정답 채점
+        blanks.forEach(function (input) {
+            const userValue = Number(input.value);
+            const correctValue = Number(input.dataset.answer);
+
+            if (userValue === correctValue) {
+                correctCount += 1;
+            }
+        });
+        // 결과 출력
+        const total = blanks.length;
+        resultDiv.textContent =
+            "맞은 개수: " + correctCount + "개 / " + total + "개";
+    });
+
+    // 다시 풀기 버튼
+    resetBtn.addEventListener("click", function () {
+        blanks.forEach(function (input) {
+            input.value = "";
+        });
+        // 결과 및 메시지 지우기
+        resultDiv.textContent = "";
+        messageDiv.textContent = "";
+    });
+</script>
+<!--준호-->
 </body>
 </html>

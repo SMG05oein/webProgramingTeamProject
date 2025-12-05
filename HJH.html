@@ -7,7 +7,7 @@
 <style>
     input.blank { width: 20px; }
     table {
-    border-collapse: collapse; /*2줄 테두리를 1줄로 합치기 */
+    border-collapse: collapse;
   }
 </style>
 
@@ -16,8 +16,7 @@
 <body>
 
 
-   <!--문제 출력표 입력 -->
-  <table border="1"> <!--이것만 쓰면 두줄겹침 -->
+  <table border="1">
     <tr>
       <th>1</th>
       <th>2</th>
@@ -99,19 +98,15 @@
 
   <br>
 
-  <!-- 제출 / 다시 풀기 버튼 -->
   <button id="submitBtn">제출</button>
   <button id="resetBtn">다시 풀기</button>
 
-  <!-- 결과 및 메시지 출력 -->
   <div id="result"></div>
   <div id="message"></div>
 
   <script>
-    // 빈칸 요소들
     const blanks = document.querySelectorAll(".blank");
 
-    // 버튼과 출력 영역
     const submitBtn = document.getElementById("submitBtn");
     const resetBtn = document.getElementById("resetBtn");
     const resultDiv = document.getElementById("result");
@@ -119,15 +114,12 @@
 
     
     submitBtn.addEventListener("click", function () {
-      // 입력값 검사 준비
       let correctCount = 0;
       let invalidInput = false;
 
-      // 이전 결과/메시지 지우기
       resultDiv.textContent = "";
       messageDiv.textContent = "";
 
-      // 모든 칸이 비었거나 숫자인지 검사
       blanks.forEach(function (input) {
         const raw = input.value.trim();
         const num = Number(raw);
@@ -137,13 +129,11 @@
         }
       });
 
-      // 모든 값이 유효한가 -> 아니오 -> 경고 메시지 출력 -> 끝
       if (invalidInput) {
         messageDiv.textContent = "모든 빈칸에 숫자를 입력해 주세요.";
         return;
       }
 
-      // 정답 채점
       blanks.forEach(function (input) {
         const userValue = Number(input.value);
         const correctValue = Number(input.dataset.answer);
@@ -152,18 +142,16 @@
           correctCount += 1;
         }
       });
-      // 결과 출력
+
       const total = blanks.length;
       resultDiv.textContent =
         "맞은 개수: " + correctCount + "개 / " + total + "개";
     });
 
-    // 다시 풀기 버튼
     resetBtn.addEventListener("click", function () {
       blanks.forEach(function (input) {
         input.value = "";
       });
-      // 결과 및 메시지 지우기
       resultDiv.textContent = "";
       messageDiv.textContent = "";
     });
