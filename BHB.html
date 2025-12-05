@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>집중력 기억력 숫자 훈련</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: beige;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1{
+            color: black;
+            margin-bottom: 30px;
+        }
+
+        .instruction-box{
+            background-color: rgb(255, 255, 255);
+            color: black;
+            padding:10px 20px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            display:flex;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+        }
+
+        .q-mark{
+            background-color: tomato;
+            color:white;
+            border-radius: 50%;
+            width:30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+            border:2px solid white;
+        }
+
+        .game-board {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+            max-width: 1200px;
+            padding: 10px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        
+        .question-box {
+            width: 40px;
+            height: 40px;
+            background-color: #d6336c;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            border-radius: 4px;
+            box-shadow: inset 0 -2px 0 rgba(0,0,0,0.2);
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: default;
+        }
+        
+        .question-box.hidden {
+            color: transparent; 
+        }
+
+        .answer-input {
+            width: 36px;
+            height: 36px;
+            background-color: #adb5bd; 
+            border: 2px solid #adb5bd;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .answer-input:focus {
+            outline: none;
+            background-color: white;
+            border-color: #d6336c;
+        }
+
+        .answer-input:disabled {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        .answer-input.wrong {
+            background-color: #ffc9c9;
+            border-color: red;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .message-area {
+            font-size: 18px;
+            font-weight: bold;
+            height: 30px;
+            color: #333;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        #submit-btn {
+            background-color: #1098ad;
+            color: white;
+        }
+        
+        #submit-btn:hover { background-color: #0b7285; }
+        #submit-btn:disabled { background-color: #ced4da; cursor: not-allowed; }
+
+        #restart-btn {
+            background-color: #868e96;
+            color: white;
+        }
+        #restart-btn:hover { background-color: #495057; }
+
+
+    </style>
+</head>
+<body>
+    <h1>집중력 기억력 숫자 훈련</h1>
+
+    <div class = "instruction-box">
+        <div class = "q-mark">Q</div>
+        <span>아래의 숫자들을 기억하고 순서대로 다시 입력해주세요. (10초 후 가려집니다.)</span>
+    </div>
+
+    <div class = "game-board" id="gameBoard"></div>
+
+    <div class = "control-panel">
+        <div class = "message-area" id="messageArea">게임 준비중..</div>
+        <div class = "buttons">
+            <button id = "submit-btn" onclick="checkAnswers()">정답확인</button>
+            <button id = "restart-btn" onclick="restartGame()">재시작</button>
+        </div>
+    </div>
+
+    <script>
+        const totalCount = 20;
+        let answer = [];
+        let timer;
+
+        const gameBoard = document.getElementById('gameBoard');
+
+        const messageArea = document.getElementById('messageArea');
+        
+        const submitBtn = document.getElementById('submit-btn');
+
+        function restartGame(){
+            answer = [];
+            gameBoard.innerHTML = '';
+            messageArea.innerText = "제한시간 : 10초";
+            messageArea.style.color = "black";
+            submitBtn.disabled = true;
+            clearTimeout(timer);
+
+            for (let i = 0; i < totalCount; i++){
+                const randomN = Math.floor(Math.random() * 99) + 1;
+                answer.push(randomN);
+            }
+
+            for(let i = 0; i < totalCount; i++){
+                const col = document.createElement('div');
+                col.className = 'column';
+
+                const Q = document.createElement('div');
+                
+                Q.className = 'question-box'; 
+                Q.id = `q-${i}`;
+                Q.innerText = answer[i];
+
+                const aIp = document.createElement('input');
+                aIp.type = 'text'; 
+                aIp.className = 'answer-input';
+                aIp.id = `a-${i}`;
+                aIp.maxLength = 2; 
+                aIp.disabled = true; 
+
+                col.appendChild(Q);
+                col.appendChild(aIp);
+                gameBoard.appendChild(col);
+            }
+
+            startTimer();
+        }
+
+
+        function startTimer(){
+            let tLeft = 10;
+            const interval = setInterval(() => {
+                tLeft--;
+                messageArea.innerText = `제한시간 : ${tLeft}초`;
+                if(tLeft <= 0) clearInterval(interval);
+            }, 1000);
+
+            timer = setTimeout(() => {
+                
+                const Q = document.querySelectorAll('.question-box');
+                Q.forEach(box => {
+                    box.classList.add('hidden');
+                });
+            
+                const aIputs = document.querySelectorAll('.answer-input');
+                aIputs.forEach(input => {
+                    input.disabled = false;
+                    input.value = ''; 
+                });
+
+                if(aIputs.length > 0) aIputs[0].focus();
+
+                messageArea.innerText = "정답을 입력하고 버튼을 누르세요.";
+                submitBtn.disabled = false;
+            }, 10000);
+        }
+
+        
+        function checkAnswers() {
+            let allC = true;
+            const inputs = document.querySelectorAll('.answer-input');
+
+            inputs.forEach((input, index) => {
+                const user = parseInt(input.value);
+                const Ans = answer[index];
+
+                input.classList.remove('wrong');
+
+                if (user !== Ans) {
+                    input.classList.add('wrong'); 
+                    allC = false;
+                }
+                
+                input.disabled = true;
+            });
+
+            if (allC) {
+                messageArea.innerText = "정답";
+                messageArea.style.color = "blue";
+            } else {
+                messageArea.innerText = "오답 , 정답 체크할것";
+                messageArea.style.color = "red";
+            }
+
+            
+            const Q = document.querySelectorAll('.question-box');
+            Q.forEach(box => box.classList.remove('hidden'));
+
+            
+            submitBtn.disabled = true;
+        }
+
+        
+        window.onload = restartGame;
+
+    </script>
+</body>
+</html>
